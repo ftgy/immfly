@@ -3,21 +3,6 @@ info:
   title: ''
   version: ''
 paths:
-  /create_sample_data/:
-    get:
-      operationId: listcreate_sample_data
-      description: ''
-      parameters: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items: {}
-          description: ''
-      tags:
-      - create-sample-data
   /channels/:
     get:
       operationId: listlist_channels
@@ -69,7 +54,7 @@ paths:
       - channels
   /channels/{id}/subchannels_and_contents/:
     get:
-      operationId: listsubchannels_and_contents
+      operationId: listget_subchannels_and_contents
       description: ''
       parameters:
       - name: id

@@ -1,36 +1,36 @@
+from decimal import Decimal
+
 from django.test import TestCase
 from django.core.management import call_command
 from io import StringIO
+
+from media_api.aux_funcs import create_content_channel, create_parent_channel
 from media_api.models import Channel, Content, Group
 
 
 class CalculateChannelRatingsCommandTest(TestCase):
 
     def setUp(self):
-        # Create a group for channels
-        self.group = Group.objects.create(name="Test Group")
+        # channel with two contents
+        channel1 = create_content_channel("channel 1")
+        content1 = channel1.subcontents.first()
+        content1.rating = Decimal(2.0)
+        content1.save()
 
-        # Create a channel with contents
-        self.channel1 = Channel(title="Channel 1", language="en", picture_url="channel1.jpg")
-        self.channel1.save(skip_validations=True)
+        content2 = Content.objects.create(file_url="/a/b/c", rating=Decimal(4.0))
+        channel1.subcontents.add(content2)
 
-        self.channel1.groups.add(self.group)
+        # channel with one content
+        channel2 = create_content_channel("channel 2")
+        content3 = channel2.subcontents.first()
+        content3.rating = Decimal(6.0)
+        content3.save()
 
-        Content.objects.create(file_url="/a/b/c", rating=8.5, channel=self.channel1)
-        Content.objects.create(file_url="/a/b/c", rating=7.5, channel=self.channel1)
-
-        # Create a channel without contents
-        self.channel2 = Channel(title="Channel 2", language="en", picture_url="channel2.jpg")
-        self.channel2.save(skip_validations=True)
-
-        self.channel2.groups.add(self.group)
-
-        # Create a subchannel with contents
-        self.subchannel = Channel(title="Subchannel 1", language="en", picture_url="subchannel1.jpg",
-                                  parent_channel=self.channel1)
-        self.subchannel.save(skip_validations=True)
-
-        Content.objects.create(file_url="/a/b/c", rating=9.0, channel=self.subchannel)
+        # parent channel
+        channel3 = create_parent_channel("channel 3")
+        channel3.subchannels.add(channel1)
+        channel3.subchannels.add(channel2)
+        channel3.save()
 
     def test_command_creates_csv_file(self):
         # Run the management command and capture the output
@@ -40,10 +40,10 @@ class CalculateChannelRatingsCommandTest(TestCase):
         # Check if the CSV file was created
         with open('channel_ratings.csv', 'r', encoding='utf-8') as csvfile:
             content = csvfile.read()
-            self.assertIn('Channel Title,Average Rating', content)  # Check header exists
-            self.assertIn('Channel 1,8.0', content)  # Check data for channel with contents
-            self.assertIn('Subchannel 1,9.0', content)  # Check data for subchannel with content
-            self.assertIn('Channel 2,No rating available', content)  # Check data for channel with no content
+            self.assertIn('Title,Avg Rating', content)
+            self.assertIn('channel 3,4.50', content)
+            self.assertIn('channel 2,6.00', content)
+            self.assertIn('channel 1,3.00', content)
 
         # Clean up the CSV file after the test
         import os
