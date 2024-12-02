@@ -1,0 +1,90 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /create_sample_data/:
+    get:
+      operationId: listcreate_sample_data
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+          description: ''
+      tags:
+      - create-sample-data
+  /channels/:
+    get:
+      operationId: listlist_channels
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+          description: ''
+      tags:
+      - channels
+  /channels/{id}/:
+    get:
+      operationId: retrieveget_channel_by_id
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+      tags:
+      - channels
+  /channels/filter_by_group/:
+    get:
+      operationId: listfilter_channels_by_groups
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+          description: ''
+      tags:
+      - channels
+  /channels/{id}/subchannels_and_contents/:
+    get:
+      operationId: listsubchannels_and_contents
+      description: ''
+      parameters:
+      - name: id
+        in: path
+        required: true
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items: {}
+          description: ''
+      tags:
+      - channels

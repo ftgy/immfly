@@ -1,0 +1,59 @@
+[
+  {
+    "model": "media_api.group",
+    "pk": 1,
+    "fields": {
+      "name": "Drama"
+    }
+  },
+  {
+    "model": "media_api.group",
+    "pk": 2,
+    "fields": {
+      "name": "Comedy"
+    }
+  },
+  {
+    "model": "media_api.channel",
+    "pk": 1,
+    "fields": {
+      "title": "Movies",
+      "language": "en",
+      "picture_url": "movies.jpg",
+      "groups": [
+        1
+      ]
+    }
+  },
+  {
+    "model": "media_api.channel",
+    "pk": 2,
+    "fields": {
+      "title": "Documentaries",
+      "language": "en",
+      "picture_url": "documentaries.jpg",
+      "parent_channel": 1,
+      "groups": [
+        2
+      ]
+    }
+  },
+  {
+    "model": "media_api.content",
+    "pk": 1,
+    "fields": {
+      "file_url": "/file/url",
+      "rating": 9.0,
+      "channel": 2
+    }
+  },
+  {
+    "model": "media_api.content",
+    "pk": 2,
+    "fields": {
+      "file_url": "/file/url",
+      "rating": 8.5,
+      "channel": 2
+    }
+  }
+]
