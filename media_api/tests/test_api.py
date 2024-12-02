@@ -1,5 +1,3 @@
-import json
-
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -32,7 +30,7 @@ class ChannelAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data['subcontents']), 1)
 
-    def test_get_subchannels_and_contents(self):
+    def test_get_subchannels_and_subcontents(self):
         response = self.client.get(f'/channels/{self.channel1.id}/subchannels_and_contents/')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json().get('subchannels', [])), 2)

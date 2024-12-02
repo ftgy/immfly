@@ -9,7 +9,6 @@ from media_api.models import Channel, Group
 from media_api.serializers import ChannelSerializer, ContentSerializer
 
 
-# Views
 @api_view(['GET'])
 def list_channels(request):
     channels = Channel.objects.all()

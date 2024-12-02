@@ -13,7 +13,7 @@ class Group(models.Model):
 # Create your models here.
 class Content(models.Model):
     file_url = models.URLField()
-    metadata = models.JSONField()
+    metadata = models.JSONField(null=True)
     rating = models.DecimalField(
         max_digits=2,
         decimal_places=1,
@@ -23,12 +23,10 @@ class Content(models.Model):
     channel = models.ForeignKey("Channel", null=True, blank=True, related_name='subcontents', on_delete=models.CASCADE)
 
     def clean(self):
-        # Ensure the parent channel does not have subchannels
         if self.channel and self.channel.subchannels.exists():
             raise ValidationError("Cannot add content to a channel that has subchannels.")
 
     def save(self, *args, **kwargs):
-        # Call clean() before saving
         self.clean()
         super().save(*args, **kwargs)
 
@@ -42,7 +40,6 @@ class Channel(models.Model):
     groups = models.ManyToManyField(Group, blank=True)
 
     def clean(self):
-        # Ensure the channel has either subchannels or contents, but not both or none
         has_subchannels = self.subchannels.exists()
         has_subcontents = self.subcontents.exists()
 
@@ -53,7 +50,6 @@ class Channel(models.Model):
 
     def save(self, *args, **kwargs):
         skip_validations = kwargs.pop("skip_validations", None)
-        # Call clean() before saving
         super().save(*args, **kwargs)
         if not skip_validations:
             self.clean()
