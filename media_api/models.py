@@ -10,7 +10,6 @@ class Group(models.Model):
     name = models.CharField(max_length=255)
 
 
-# Create your models here.
 class Content(models.Model):
     file_url = models.URLField()
     metadata = models.JSONField(null=True)
@@ -54,11 +53,11 @@ class Channel(models.Model):
         if not skip_validations:
             self.clean()
 
-    def average_rating(self):
-        if self.subchannels.exists():
-            subchannel_ratings = [sub.average_rating() for sub in self.subchannels.all() if
-                                  sub.average_rating() is not None]
-            return sum(subchannel_ratings) / len(subchannel_ratings) if subchannel_ratings else None
-        elif self.contents.exists():
-            return self.contents.aggregate(Avg('rating'))['rating__avg']
-        return None
+    # def average_rating(self):
+    #     if self.subchannels.exists():
+    #         subchannel_ratings = [sub.average_rating() for sub in self.subchannels.all() if
+    #                               sub.average_rating() is not None]
+    #         return sum(subchannel_ratings) / len(subchannel_ratings) if subchannel_ratings else None
+    #     elif self.contents.exists():
+    #         return self.contents.aggregate(Avg('rating'))['rating__avg']
+    #     return None

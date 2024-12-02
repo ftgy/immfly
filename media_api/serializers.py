@@ -1,10 +1,7 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from media_api.models import Content, Channel
 
-
-# Serializers.
 
 class ContentSerializer(serializers.ModelSerializer):
     class Meta:
