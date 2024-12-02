@@ -1,9 +1,9 @@
 from decimal import Decimal
 
-from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db import models
 from django.db.models import Avg
+from rest_framework.exceptions import ValidationError
 
 
 class Group(models.Model):
@@ -39,6 +39,17 @@ class Channel(models.Model):
     groups = models.ManyToManyField(Group, blank=True)
 
     def clean(self):
+        super().clean()
+        self.validate_subcontents_subchannels()
+        self.validate_groups()
+
+    def save(self, *args, **kwargs):
+        skip_validations = kwargs.pop("skip_validations", None)
+        super().save(*args, **kwargs)
+        if not skip_validations:
+            self.clean()
+
+    def validate_subcontents_subchannels(self):
         has_subchannels = self.subchannels.exists()
         has_subcontents = self.subcontents.exists()
 
@@ -47,17 +58,9 @@ class Channel(models.Model):
         if not has_subchannels and not has_subcontents:
             raise ValidationError("A channel must have either subchannels or contents.")
 
-    def save(self, *args, **kwargs):
-        skip_validations = kwargs.pop("skip_validations", None)
-        super().save(*args, **kwargs)
-        if not skip_validations:
-            self.clean()
-
-    # def average_rating(self):
-    #     if self.subchannels.exists():
-    #         subchannel_ratings = [sub.average_rating() for sub in self.subchannels.all() if
-    #                               sub.average_rating() is not None]
-    #         return sum(subchannel_ratings) / len(subchannel_ratings) if subchannel_ratings else None
-    #     elif self.contents.exists():
-    #         return self.contents.aggregate(Avg('rating'))['rating__avg']
-    #     return None
+    def validate_groups(self):
+        if self.parent_channel:
+            parent_groups = set(self.parent_channel.groups.all())
+            current_groups = set(self.groups.all())
+            if not current_groups.issubset(parent_groups):
+                raise ValidationError("A channel's groups must be a subset of its parent's groups.")

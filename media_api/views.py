@@ -59,4 +59,4 @@ def filter_channels_by_group(request):
 
     channels = Channel.objects.filter(groups=group)
     serializer = ChannelSerializer(channels, many=True)
-    return JsonResponse(serializer.data)
+    return Response(serializer.data)

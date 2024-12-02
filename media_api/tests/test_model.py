@@ -1,4 +1,4 @@
-from django.core.exceptions import ValidationError
+from rest_framework.exceptions import ValidationError
 from rest_framework.test import APITestCase
 
 from media_api.aux_funcs import create_content_channel, create_channel_with_subchannels, create_content

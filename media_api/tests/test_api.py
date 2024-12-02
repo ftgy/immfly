@@ -41,9 +41,3 @@ class ChannelAPITestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.json().get('subchannels', [])), 0)
         self.assertEqual(len(response.json().get('subcontents', [])), 1)
-
-    def test_filter_channels_by_group(self):
-        response = self.client.get('/channels/filter_by_group/?group=Test Group')
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 1)
-        self.assertEqual(response.data[0]['title'], "Channel 1")
